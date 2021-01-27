@@ -1,22 +1,22 @@
 ## Introduction to NLP - Assignment 1 
-#### Language-Modelling
+### Language-Modelling
 ---
 ##### Anishka Sachdeva (2018101112)
-###### 27th January, 2021
+###### 30th January, 2021
 ---
 ## Procedures followed
 ---
 
-##### Tokenisation :
+##### Tokenisation
 1. 
 
-##### Language Modelling :
+##### Language Modelling
 1. 
 
-##### Smoothing :
+##### Smoothing
 1. 
 
-##### Perplexity Score :
+##### Perplexity Score
 1. 
 
 ---
