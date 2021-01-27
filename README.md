@@ -28,3 +28,4 @@ TODO:
 1. Handle lower-upper case
 2. Handle if empty sentence is given in input sentence
 3. Handle if spaces are given in input sentence
+4. Change tokens o new_tokens

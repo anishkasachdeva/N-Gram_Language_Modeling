@@ -71,8 +71,8 @@ smoothing_technique = input("Enter the smoothing technique : ")     #Taking the 
 input_sentence = input("Enter the sentence : ")                     #Taking the sentence input from the user whose probability has to be calculated
 
 
-# corpus_file_1 = open("Health_English.txt", "r")                     #Opening the Health corpus
-corpus_file_1 = open("eg.txt", "r")                     #Opening the Health corpus
+corpus_file_1 = open("Health_English.txt", "r")                     #Opening the Health corpus
+# corpus_file_1 = open("eg.txt", "r")                     #Opening the Health corpus
 # corpus_file_1 = open("technical_domain_corpus.txt", "r")            #Opening the Technical Domain corpus
 
 
@@ -90,7 +90,7 @@ with corpus_file_1 as file:
         # print("length ", len(line_split))                                               #Reading each line 
         # for unigram in line.split():   
         for i in range(len(line_split)):
-            unigram = line_split[i]                           
+            unigram = line_split[i]                      
             unigram = unigram.lower()
             if i == len(line_split) - 1:
                 unigram = unigram[:len(unigram)-1]                            #To remove the full stop
@@ -118,17 +118,29 @@ token_indices_to_delete = []
 for i in range(len(tokens)):
     token = tokens[i]
     for character in token:
-        print(character)
         if character in special_characters:
             token_indices_to_delete.append(i)
             break
 
+
+print(len(tokens))
+
+
+j = 0
 new_tokens = []
 for i in range(len(tokens)):
-    if i not in token_indices_to_delete:
+    if j < len(token_indices_to_delete):
+        if i != token_indices_to_delete[j]:
+            new_tokens.append(tokens[i])
+        else:
+            j+=1
+    else:
         new_tokens.append(tokens[i])
 
-print(new_tokens)
+print(len(new_tokens))
+
+
+
 
 for i in range(len(tokens)):
     if (i + 1) < len(tokens):
