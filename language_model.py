@@ -1,5 +1,7 @@
 corpus = input("Enter the corpus text file : ")                     #Taking the corpus input from the user
-smoothing_technique = input("Enter the smoothing technique : ")     #Taking the smoothing technique input from the use
+smoothing_technique = input("Enter the smoothing technique : ")     #Taking the smoothing technique input from the user
+input_sentence = input("Enter the sentence : ")                     #Taking the sentence input from the user whose probability has to be calculated
+
 
 corpus_file_1 = open("Health_English.txt", "r")                     #Opening the Health corpus
 corpus_file_2 = open("technical_domain_corpus.txt", "r")            #Opening the Technical Domain corpus
@@ -9,7 +11,6 @@ tokens = []                                                         #List of all
 unigram_frequency = {}                                              #Dictionary of single tokens mapped to their frequency
 bigram_frequency = {}                                               #Dictionary of double tokens mapped to their frequency
 trigram_frequency = {}                                              #Dictionary of triple tokens mapped to their frequency
-# print(corpus_file.read(100))
 
 
 with corpus_file_1 as file:    
@@ -59,14 +60,18 @@ print('-----------------------------------------------------------------')
 print(trigram_frequency)
 print('-----------------------------------------------------------------')
 
+
 def tokenize():
     pass
+
 
 def language_modelling():
     pass
 
+
 def perplexity():
     pass
+
 
 def smoothing():
     pass
