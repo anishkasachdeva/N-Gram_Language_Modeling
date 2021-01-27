@@ -4,5 +4,19 @@
 ##### Anishka Sachdeva (2018101112)
 ###### 27th January, 2021
 ---
-## Description and Analysis of Solutions
+## Procedures followed
 ---
+
+##### Tokenisation :
+1. 
+
+##### Language Modelling :
+1. 
+
+##### Smoothing :
+1. 
+
+##### Perplexity Score :
+1. 
+
+## Observations and Analysis
