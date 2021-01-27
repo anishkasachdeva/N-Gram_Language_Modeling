@@ -7,16 +7,16 @@
 ## Procedures followed
 ---
 
-##### Tokenisation
+### Tokenisation
 1. 
 
-##### Language Modelling
+### Language Modelling
 1. 
 
-##### Smoothing
+### Smoothing
 1. 
 
-##### Perplexity Score
+### Perplexity Score
 1. 
 
 ---
