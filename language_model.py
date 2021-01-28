@@ -137,8 +137,8 @@ def preprocessing_health_domain_corpus(corpus_file_name,tokens):
                     temp_str += " "   
 
         tokenized_str = temp_str.split()
-            for unigram in tokenized_str :
-                tokens.append(unigram)
+        for unigram in tokenized_str:
+            tokens.append(unigram)
 
     return tokens
                   
