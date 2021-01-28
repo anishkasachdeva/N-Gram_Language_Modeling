@@ -25,7 +25,10 @@
 
 
 TODO:
-1. Handle lower-upper case
-2. Handle if empty sentence is given in input sentence
-3. Handle if spaces are given in input sentence
-4. Change tokens o new_tokens
+1. Handle lower-upper case ---------------------------------------->Done
+2. Handle if empty sentence is given in input sentence ------------>Done
+3. Handle if spaces are given in input sentence ------------------->
+4. Change tokens to new_tokens in the lower code
+5. Discuss the edge case handling with Viksit in tokenization
+6. Write README till tomorrow's work
+7. Finish Perplexity and Smoothing
