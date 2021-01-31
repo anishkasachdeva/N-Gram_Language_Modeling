@@ -256,6 +256,8 @@ That means Z is the height of the length of the packed bed required to transfer 
 If the mass transfer has to be incorporated this much of length of the reactor is required under these operational conditions to have the substrate concentration equivalent to biochemical reaction .
 That means to make Sb - Ss equal to zero , without any biochemical reaction this much of height of the reactor is required under these operational conditions .
 Based on the operational data that means the concentration of substrate in the feed and the product stream as well as the parameters of the reactor operation and the particle size , one can determine the length of the reactor required and if this length of the reactor required is relative to the length of the reactor required for biochemical reaction , if you compare this height required , let us say this is Z1 to that of the height required Z2 based on biochemical reaction if you calculate idealized reactor performance equation and calculate the height of the reactor required and compare the two values that gives you an identification whether film diffusion is controlling or not .
+
+
 The one which is larger has to be used .
 So for example let us say if this Z is much , much smaller than the height required for biochemical reaction then you don ’ t have to worry about diffusion .
 You simply design your reactor on the basis of biochemical reaction and be happy .

@@ -32,3 +32,78 @@ TODO:
 5. Discuss the edge case handling with Viksit in tokenization
 6. Write README till tomorrow's work
 7. Finish Perplexity and Smoothing
+8. Unkwown words
+
+
+
+
+
+
+Unigram_map = 	{	
+                    Unigram : c,
+                    Unigram : c,
+                    Unigram : c
+                }
+
+
+Bigram_map =	{
+				    Bigram :	{
+							        Bigram : c
+                                },
+					Bigram : 	{
+							    	Bigram : c
+							    },
+					Bigram : 	{
+							    	Bigram : c
+                                }
+                } 
+
+
+Trigram_map = {
+                    Trigram :   {
+                                    Trigram :   {
+                                                    Trigrams : c
+                                                }
+                                }
+
+                    Trigram :   {
+                                    Trigram :   {
+                                                    Trigrams : c
+                                                }
+                                }
+
+                    Trigram :   {
+                                    Trigram : {
+                                                    Trigrams : c
+                                                }
+                                }
+                }
+
+
+Fourgram_map = {
+                    Fourgram :  {
+                                    Fourgram :  {
+                                                    Fourgrams : {
+                                                                    Fourgrams : c
+                                                                }
+                                                }
+                                }   
+
+                    Fourgram :  {
+                                    Fourgram :  {
+                                                    Fourgrams : {
+                                                                    Fourgram : c
+                                                                }
+                                                }
+                                }
+
+                    Fourgram :  {
+                                    Fourgram : {
+                                                    Fourgrams : {
+                                                                    Fourgram : c
+                                                                }
+                                                }
+                                }
+                }
+
+

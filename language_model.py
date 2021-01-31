@@ -1,27 +1,10 @@
 def count_occurences(sentence):
     num_of_words = len(sentence.split())
 
-    if num_of_words == 4:
-        if sentence in fourgram_frequency:
-            return fourgram_frequency[sentence]
-        else:
-            return 0
-    elif num_of_words == 3:
-        if sentence in trigram_frequency:
-            return trigram_frequency[sentence]
-        else:
-            return 0
-    elif num_of_words == 2:
-        if sentence in bigram_frequency:
-            return bigram_frequency[sentence]
-        else:
-            return 0
-    elif num_of_words == 1:
-        if sentence in unigram_frequency:
-            return unigram_frequency[sentence]
-        else:
-            return 0
-    return 0
+    if sentence in ngrams_frequency:
+        return ngrams_frequency[sentence]
+    else:
+        return 0
 
 
 def language_modelling(input_sentence):
@@ -51,7 +34,7 @@ def language_modelling(input_sentence):
         else: #------------------------------------------------------------------------------------------------------------>Confirm this case and do it correctly
             unigram = words[i]
             c1 = count_occurences(unigram)
-            c2 = len(unigram_frequency) #--------------------> won't be this
+            c2 = len(ngrams_frequency) #--------------------> won't be this
 
         # print(c1, c2)
         # print('--------------')
@@ -132,7 +115,14 @@ def preprocessing_health_domain_corpus(corpus_file_name,tokens):
                     if (line[i] >= 'a' and line[i] <= 'z') or (line[i] >= 'A' and line[i] <= 'Z') or (line[i] >= '0' and line[i] <= '9'):
                         temp_str += line[i]
                     else:
-                        pass
+                        if line[i] == '=' or line[i] == '+':
+                            if i-1 >= 0:
+                                if line[i-1] != " ":
+                                    temp_str += " "
+                                temp_str += line[i]
+                            if i+1 < len(line):
+                                if line[i+1] != " ":
+                                    temp_str += " "    
                 else:
                     temp_str += " "   
 
@@ -145,22 +135,23 @@ def preprocessing_health_domain_corpus(corpus_file_name,tokens):
     
 
 
-def tokenization(tokens, unigram_frequency, bigram_frequency, trigram_frequency, fourgram_frequency):
+def tokenization(tokens, ngrams_frequency):
     for i in range(len(tokens)):
         unigram = tokens[i]
-        if unigram in unigram_frequency:
-            unigram_frequency[unigram] += 1
+        if unigram in ngrams_frequency:
+            ngrams_frequency[unigram] += 1
         else:
-            unigram_frequency[unigram] = 1
+            ngrams_frequency[unigram] = 1
         i += 1
     
+
     for i in range(len(tokens)):
         if (i + 1) < len(tokens):
-            bigram = tokens[i] + " " + tokens[i+1]                                       #Creating a bigram
-            if bigram in bigram_frequency:
-                bigram_frequency[bigram] += 1
+            bigram = tokens[i] + " " + tokens[i+1]                                                    #Creating a bigram
+            if bigram in ngrams_frequency:
+                ngrams_frequency[bigram] += 1
             else:
-                bigram_frequency[bigram] = 1
+                ngrams_frequency[bigram] = 1
         else:
             break
         i += 2
@@ -169,10 +160,10 @@ def tokenization(tokens, unigram_frequency, bigram_frequency, trigram_frequency,
     for i in range(len(tokens)):
         if (i + 2) < len(tokens):
             trigram = tokens[i] + " " + tokens[i+1] + " " + tokens[i+2]                             #Creating a trigram
-            if trigram in trigram_frequency:
-                trigram_frequency[trigram] += 1
+            if trigram in ngrams_frequency:
+                ngrams_frequency[trigram] += 1
             else:
-                trigram_frequency[trigram] = 1
+                ngrams_frequency[trigram] = 1
         else:
             break
         i += 3
@@ -181,10 +172,10 @@ def tokenization(tokens, unigram_frequency, bigram_frequency, trigram_frequency,
     for i in range(len(tokens)):
         if (i + 3) < len(tokens):
             fourgram = tokens[i] + " " + tokens[i+1] + " " + tokens[i+2] + " " + tokens[i+3]                           #Creating a fourgram
-            if fourgram in fourgram_frequency:
-                fourgram_frequency[fourgram] += 1
+            if fourgram in ngrams_frequency:
+                ngrams_frequency[fourgram] += 1
             else:
-                fourgram_frequency[fourgram] = 1
+                ngrams_frequency[fourgram] = 1
         else:
             break
         i += 4
@@ -213,11 +204,13 @@ while True:
 # corpus_file_2 = open("technical_domain_corpus.txt", "r")            #Opening the Technical Domain corpus
 
 
-tokens = []                                                         #List of all tokens
-unigram_frequency = {}                                              #Dictionary of single tokens mapped to their frequency
-bigram_frequency = {}                                               #Dictionary of double tokens mapped to their frequency
-trigram_frequency = {}                                              #Dictionary of triple tokens mapped to their frequency
-fourgram_frequency = {}
+tokens = []  
+ngram_frequency = {}
+                                                       #List of all tokens
+# ngrams_frequency = {}                                              #Dictionary of single tokens mapped to their frequency
+# ngrams_frequency = {}                                               #Dictionary of double tokens mapped to their frequency
+# ngrams_frequency = {}                                              #Dictionary of triple tokens mapped to their frequency
+# ngrams_frequency = {}
 corpus_file_name = ""
 
 
@@ -230,7 +223,7 @@ elif corpus == 'h':
     preprocessing_health_domain_corpus(corpus_file_name,tokens)
 print(tokens)
 
-tokenization(tokens, unigram_frequency,bigram_frequency,trigram_frequency,fourgram_frequency)
+tokenization(tokens, ngrams_frequency)
 #-------------------------------------------------> process the input sentence first
 print(language_modelling(input_sentence))
 
@@ -251,10 +244,10 @@ print(language_modelling(input_sentence))
 #             if i == len(line_split) - 1:
 #                 tokens.append('\n')                                           #Representing '\n' as end of sentence
             
-#             if unigram in unigram_frequency:
-#                 unigram_frequency[unigram] += 1
+#             if unigram in ngrams_frequency:
+#                 ngrams_frequency[unigram] += 1
 #             else:
-#                 unigram_frequency[unigram] = 1;  
+#                 ngrams_frequency[unigram] = 1;  
 
 #             for char in unigram:
 #                 if char.isalnum() == False:
@@ -314,10 +307,10 @@ print(language_modelling(input_sentence))
 #         print(tokenized_str)
 #         for unigram in tokenized_str :
 #             tokens.append(unigram)
-#             if unigram in unigram_frequency:
-#                 unigram_frequency[unigram] += 1
+#             if unigram in ngrams_frequency:
+#                 ngrams_frequency[unigram] += 1
 #             else:
-#                 unigram_frequency[unigram] = 1
+#                 ngrams_frequency[unigram] = 1
 
             
 # print(tokens)
@@ -409,10 +402,10 @@ print(language_modelling(input_sentence))
 #         a = tokens[i]
 #         b = tokens[i+1]
 #         bigram = a + " " + b                                        #Creating a bigram
-#         if bigram in bigram_frequency:
-#             bigram_frequency[bigram] += 1
+#         if bigram in ngrams_frequency:
+#             ngrams_frequency[bigram] += 1
 #         else:
-#             bigram_frequency[bigram] = 1
+#             ngrams_frequency[bigram] = 1
 #     else:
 #         break
 #     i += 2
@@ -424,10 +417,10 @@ print(language_modelling(input_sentence))
 #         b = tokens[i+1]
 #         c = tokens[i+2]
 #         trigram = a + " " + b + " " + c                             #Creating a trigram
-#         if trigram in trigram_frequency:
-#             trigram_frequency[trigram] += 1
+#         if trigram in ngrams_frequency:
+#             ngrams_frequency[trigram] += 1
 #         else:
-#             trigram_frequency[trigram] = 1
+#             ngrams_frequency[trigram] = 1
 #     else:
 #         break
 #     i += 3
@@ -440,23 +433,23 @@ print(language_modelling(input_sentence))
 #         c = tokens[i+2]
 #         d = tokens[i+3]
 #         fourgram = a + " " + b + " " + c + " " + d                            #Creating a fourgram
-#         if fourgram in fourgram_frequency:
-#             fourgram_frequency[fourgram] += 1
+#         if fourgram in ngrams_frequency:
+#             ngrams_frequency[fourgram] += 1
 #         else:
-#             fourgram_frequency[fourgram] = 1
+#             ngrams_frequency[fourgram] = 1
 #     else:
 #         break
 #     i += 4
 
 
 # print('-----------------------------------------------------------------')
-# print(unigram_frequency)
+# print(ngrams_frequency)
 # print('-----------------------------------------------------------------')
-# print(bigram_frequency)
+# print(ngrams_frequency)
 # print('-----------------------------------------------------------------')
-# print(trigram_frequency)
+# print(ngrams_frequency)
 # print('-----------------------------------------------------------------')
-# print(fourgram_frequency)
+# print(ngrams_frequency)
 # print('-----------------------------------------------------------------')
 # print()
 
