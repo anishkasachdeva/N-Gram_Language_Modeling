@@ -1,6 +1,5 @@
 import pprint, os , sys, pprint, math, re, random
 
-
 def tokenize(ip_text):
     start_tag = "<"
     end_tag = ">"
@@ -112,121 +111,128 @@ def mapsFormatation(tokens):
                 fourgram_map[a][b][c] = {}
                 fourgram_map[a][b][c][d] = 1
 
-    return unigram_map,bigram_map,trigram_map,fourgram_map
+    return unigram_map, bigram_map, trigram_map, fourgram_map
 
 
-# def witten_bell_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourgram_map):
-#     partial_probability = 0
-
-#     if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
-#         pass
-#     else:
-#         pass
-
-
-def kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourgram_map):
-    discounting_factor = 0.75
+def witten_bell_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourgram_map):
     partial_probability = 0
 
     if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
-    #-------------------------------------------------Calculation of P(d|abc)
-        
-        Ckn_abcd = 0
-        Ckn_abc = 0
-        # if a in fourgram_map and b in fourgram_map[a] and c in fourgram_map[a][b] and d in fourgram_map[a][b][c]:
-        if d in fourgram_map[a][b][c]:
-            Ckn_abcd = fourgram_map[a][b][c][d]
-        # if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
-        Ckn_abc = trigram_map[a][b][c]
-        first_term_1 = float(max(Ckn_abcd - discounting_factor, 0))/float(Ckn_abc)
-
-        num_1 = 0
-        deno_1 = 0
-        # if a in fourgram_map and b in fourgram_map[a] and c in fourgram_map[a][b]:
-        num_1 = len(fourgram_map[a][b][c])
-        # if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
-        deno_1 = trigram_map[a][b][c]
-        lambda_abc = float(discounting_factor * num_1)/float(deno_1)
-
-        #-------------------------------------------------Calculation of P(d|bc)
-
-        Ccn_bcd = 0
-        CCn_bc = 0
-        for i in fourgram_map:
-            if b in fourgram_map[i] and c in fourgram_map[i][b] and d in fourgram_map[i][b][c]:
-                Ccn_bcd += 1
-        for i in fourgram_map:
-            if b in fourgram_map[i] and c in fourgram_map[i][b]:
-                CCn_bc += len(fourgram_map[i][b][c])
-        first_term_2 = float(max(Ccn_bcd - discounting_factor,0))/float(CCn_bc)
-
-        num_2 = 0
-        deno_2 = 0
-        # if b in trigram_map and c in trigram_map[b]:
-        num_2 = len(trigram_map[b][c])
-        # if b in bigram_map and c in bigram_map[b]:
-        deno_2 = bigram_map[b][c]
-        # lambda_bc = (float(discounting_factor)/float(deno_2))*float(num_2)
-        lambda_bc = float(discounting_factor * num_2)/float(deno_2)
-
-        #-------------------------------------------------Calculation of P(d|c)
-
-        CCn_cd = 0
-        CCn_c = 0
-        for i in trigram_map:
-            if c in trigram_map[i] and d in trigram_map[i][c]:
-                CCn_cd += 1
-        for i in trigram_map:
-            if c in trigram_map[i]:
-                CCn_c += len(trigram_map[i][c])
-        first_term_3 = float(max(CCn_cd - discounting_factor,0))/float(CCn_c)
-
-        num_3 = 0
-        deno_3 = 0
-        # if c in bigram_map:
-        num_3 = len(bigram_map[c])
-        # if c in unigram_map:
-        deno_3 = unigram_map[c]
-        lambda_c = float(discounting_factor * num_3)/float(deno_3)
-
-        #-------------------------------------------------Calculation of P(d|phi)
-
-        CCn_phi_d = 0
-        CCn_phi = 0
-
-        for i in bigram_map:
-            if d in bigram_map[i]:
-                CCn_phi_d += 1
-        for i in bigram_map:
-            CCn_phi = len(bigram_map[i])
-        first_term_4 = float(max(CCn_phi_d - discounting_factor,0))/float(CCn_phi)
-
-        num_4 = 0
-        deno_4 = 0
-        num_4 = len(unigram_map)
-        for i in unigram_map:
-            deno_4 = unigram_map[i]
-        lambda_phi = float(discounting_factor * num_4) / float(deno_4)
-        last_term = float(lambda_phi)/float(num_4)
-
-        #-------------------------------------------------Calculation of Partial Probability
-
-        partial_probability = (first_term_1 + lambda_abc * (first_term_2 + lambda_bc * (first_term_3 + lambda_c * (first_term_4 + last_term))))
-        return math.log(partial_probability)
-        
+        pass
     else:
-        lambd = (float(discounting_factor)/float(sum(unigram_map.values())))*len(unigram_map)
-        
-        fourgrams_variety = 0
-        for i in fourgram_map:
-            for j in fourgram_map[i]:
-                for k in fourgram_map[i][j]:
-                    fourgrams_variety += len(fourgram_map[i][j][k])
-        
-        partial_probability = float(lambd)/float(fourgrams_variety)
-        return math.log(partial_probability)
+        pass
 
-    return partial_probability
+
+def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map):
+    discounting_factor = 0.75
+    final_probability_of_sentence = 0
+    for index in range(3, len(sen)):
+        a = sen[index-3]
+        b = sen[index-2]
+        c = sen[index-1]
+        d = sen[index]
+        partial_probability = 0
+
+        if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
+        #-------------------------------------------------Calculation of P(d|abc)
+        
+            Ckn_abcd = 0
+            Ckn_abc = 0
+            # if a in fourgram_map and b in fourgram_map[a] and c in fourgram_map[a][b] and d in fourgram_map[a][b][c]:
+            if d in fourgram_map[a][b][c]:
+                Ckn_abcd = fourgram_map[a][b][c][d]
+            # if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
+            Ckn_abc = trigram_map[a][b][c]
+            first_term_1 = float(max(Ckn_abcd - discounting_factor, 0))/float(Ckn_abc)
+
+            num_1 = 0
+            deno_1 = 0
+            # if a in fourgram_map and b in fourgram_map[a] and c in fourgram_map[a][b]:
+            num_1 = len(fourgram_map[a][b][c])
+            # if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
+            deno_1 = trigram_map[a][b][c]
+            lambda_abc = float(discounting_factor * num_1)/float(deno_1)
+
+            #-------------------------------------------------Calculation of P(d|bc)
+
+            Ccn_bcd = 0
+            CCn_bc = 0
+            for i in fourgram_map:
+                if b in fourgram_map[i] and c in fourgram_map[i][b] and d in fourgram_map[i][b][c]:
+                    Ccn_bcd += 1
+            for i in fourgram_map:
+                if b in fourgram_map[i] and c in fourgram_map[i][b]:
+                    CCn_bc += len(fourgram_map[i][b][c])
+            first_term_2 = float(max(Ccn_bcd - discounting_factor,0))/float(CCn_bc)
+
+            num_2 = 0
+            deno_2 = 0
+            # if b in trigram_map and c in trigram_map[b]:
+            num_2 = len(trigram_map[b][c])
+            # if b in bigram_map and c in bigram_map[b]:
+            deno_2 = bigram_map[b][c]
+            # lambda_bc = (float(discounting_factor)/float(deno_2))*float(num_2)
+            lambda_bc = float(discounting_factor * num_2)/float(deno_2)
+
+            #-------------------------------------------------Calculation of P(d|c)
+
+            CCn_cd = 0
+            CCn_c = 0
+            for i in trigram_map:
+                if c in trigram_map[i] and d in trigram_map[i][c]:
+                    CCn_cd += 1
+            for i in trigram_map:
+                if c in trigram_map[i]:
+                    CCn_c += len(trigram_map[i][c])
+            first_term_3 = float(max(CCn_cd - discounting_factor,0))/float(CCn_c)
+
+            num_3 = 0
+            deno_3 = 0
+            # if c in bigram_map:
+            num_3 = len(bigram_map[c])
+            # if c in unigram_map:
+            deno_3 = unigram_map[c]
+            lambda_c = float(discounting_factor * num_3)/float(deno_3)
+
+            #-------------------------------------------------Calculation of P(d|phi)
+
+            CCn_phi_d = 0
+            CCn_phi = 0
+
+            for i in bigram_map:
+                if d in bigram_map[i]:
+                    CCn_phi_d += 1
+            for i in bigram_map:
+                CCn_phi = len(bigram_map[i])
+            first_term_4 = float(max(CCn_phi_d - discounting_factor,0))/float(CCn_phi)
+
+            num_4 = 0
+            deno_4 = 0
+            num_4 = len(unigram_map)
+            for i in unigram_map:
+                deno_4 = unigram_map[i]
+            lambda_phi = float(discounting_factor * num_4) / float(deno_4)
+            last_term = float(lambda_phi)/float(num_4)
+
+            #-------------------------------------------------Calculation of Partial Probability
+
+            partial_probability = (first_term_1 + lambda_abc * (first_term_2 + lambda_bc * (first_term_3 + lambda_c * (first_term_4 + last_term))))
+            # return math.log(partial_probability)
+            
+        else:
+            lambd = (float(discounting_factor)/float(sum(unigram_map.values())))*len(unigram_map)
+            
+            fourgrams_variety = 0
+            for i in fourgram_map:
+                for j in fourgram_map[i]:
+                    for k in fourgram_map[i][j]:
+                        fourgrams_variety += len(fourgram_map[i][j][k])
+            
+            partial_probability = float(lambd)/float(fourgrams_variety)
+            # return math.log(partial_probability)
+        
+        final_probability_of_sentence += math.log(partial_probability)
+    return final_probability_of_sentence
 
 
 def calculate_perplexity_of_sentence(probability, n):
@@ -344,7 +350,8 @@ if os.path.exists(corpus):
         #         perplexity_Train_Test(train_h, f7, unigram_map_h, bigram_map_h, trigram_map_h, fourgram_map_h)
         #     elif i == 7:
         #         perplexity_Train_Test(test_h, f8, unigram_map_h, bigram_map_h, trigram_map_h, fourgram_map_h)
-    
+
+
         # file_close(f1,f2,f3,f4,f5,f6,f7,f8)
         #---------------------------------------------------------------------------------------> Finished file writing part
 
@@ -353,28 +360,17 @@ if os.path.exists(corpus):
         if smoothing_technique == 'k'or smoothing_technique == 'K':
 
             for i in range(len(test)):
-                # print(test[i])
-                # partial_probability_list = []
-                final_probability_of_sentence = 0
-                # sentence = ""
-                for j in range(3,len(test[i])):
-                    # sentence += test[i][j] + " "
-                    a = test[i][j-3]
-                    b = test[i][j-2]
-                    c = test[i][j-1]
-                    d = test[i][j]
-                    partial_probability_of_sentence = kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourgram_map)
-
-                    final_probability_of_sentence += partial_probability_of_sentence
-
-                # partial_probability_list.append(partial_probability)
-                final_probability_of_sentence = (final_probability_of_sentence)
+                final_probability_of_sentence = kneser_ney_smoothing(test[i], unigram_map, bigram_map, trigram_map, fourgram_map)
                 # perplexity_of_sentence = calculate_perplexity_of_sentence(final_probability_of_sentence, len(test[i]) - 3)
                 print("Probability of sentence ", final_probability_of_sentence)
                 # print("perplexity of sentence ", perplexity_of_sentence)
         # --------------------------------------------------------------------------------------------------------------------------------------------------
         elif smoothing_technique == 'w' or smoothing_technique == 'W':
-            pass
+            for i in range(len(test)):
+                final_probability_of_sentence = witten_bell_smoothing(test[i], unigram_map, bigram_map, trigram_map, fourgram_map)
+                # perplexity_of_sentence = calculate_perplexity_of_sentence(final_probability_of_sentence, len(test[i]) - 3)
+                print("Probability of sentence ", final_probability_of_sentence)
+                # print("perplexity of sentence ", perplexity_of_sentence)
         else:
             print("Wrong Smoothing Technique. Please try again!")
 else:
