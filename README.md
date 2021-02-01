@@ -5,12 +5,10 @@
 ###### 1st February, 2021
 ---
 ## Steps to execute the code :
----
 python3 language_model.py <smoothing_type> <path_corpus>
-where
-smoothing_type = k for Kneser Ney Smoothing 
-smoothing_type = w for Witten Bell Smoothing
-
+###### smoothing_type = k for Kneser Ney Smoothing and
+###### smoothing_type = w for Witten Bell Smoothing
+---
 TODO:
 1. Handle lower-upper case ---------------------------------------->Done
 2. Handle if empty sentence is given in input sentence ------------>Done
