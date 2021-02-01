@@ -36,12 +36,9 @@ def tokenize(ip_text):
 #     return text
 
 
-def mapsFormatation(tokens):
-    unigram_map = {}
-    bigram_map = {}
-    trigram_map = {}
-    fourgram_map = {}
 
+def formUnigramMap(tokens):
+    unigram_map = {}
     for i in range(len(tokens)):
         for j in range(len(tokens[i])):
             a = tokens[i][j]
@@ -50,7 +47,10 @@ def mapsFormatation(tokens):
                 unigram_map[a] += 1
             else:
                 unigram_map[a] = 1
+    return unigram_map
 
+def formBigramMap(tokens):
+    bigram_map = {}
     for i in range(len(tokens)):
         for j in range(len(tokens[i]) - 1):
             a = tokens[i][j]
@@ -64,7 +64,10 @@ def mapsFormatation(tokens):
             else:
                 bigram_map[a] = {}
                 bigram_map[a][b] = 1
+    return bigram_map
 
+def formTrigramMap(tokens):
+    trigram_map = {}
     for i in range(len(tokens)):
         for j in range(len(tokens[i]) - 2):
             a = tokens[i][j]
@@ -84,7 +87,10 @@ def mapsFormatation(tokens):
                 trigram_map[a] = {}
                 trigram_map[a][b] = {}
                 trigram_map[a][b][c] = 1
+    return trigram_map
 
+def formFourgramMap(tokens):
+    fourgram_map = {}
     for i in range(len(tokens)):
         for j in range(len(tokens[i]) - 3):
             a = tokens[i][j]
@@ -111,9 +117,48 @@ def mapsFormatation(tokens):
                 fourgram_map[a][b] = {}
                 fourgram_map[a][b][c] = {}
                 fourgram_map[a][b][c][d] = 1
+    return fourgram_map
 
-    return unigram_map, bigram_map, trigram_map, fourgram_map
+# def mapsFormatation(tokens):
 
+    
+
+    
+
+    
+
+    
+
+    # return unigram_map, bigram_map, trigram_map, fourgram_map
+
+
+def mark_unknown_words(input_tokens):
+    unknown_word = "<markunkwownmark>"
+    frequency = []
+    unigram_map = formUnigramMap(train)
+    for word in unigram_map:
+        frequency.append(unigram_map[word])
+
+    frequency.sort()
+    lower_limit = frequency[int(0.02*len(frequency))]
+
+    # lower_limit = frequency[int(len(frequency) - (0.2*len(frequency)))]
+
+    for i in range(len(input_tokens)):
+        for j in range(len(input_tokens[i])):
+            if unigram_map[input_tokens[i][j]] <= lower_limit:
+                if input_tokens[i][j] != "<" and input_tokens[i][j] != ">":
+                    input_tokens[i][j] = unknown_word
+    return input_tokens
+
+
+def mark_unknown_test(test, unigram_map):
+    unknown_word = "<markunkwownmark>"
+    for i in range(len(test)):
+        for j in range(len(test[i])):
+            if test[i][j] not in unigram_map:
+                test[i][j] = unknown_word
+    return test
 
 def witten_bell_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourgram_map):
     partial_probability = 0
@@ -318,8 +363,14 @@ if os.path.exists(corpus):
         for i in range(5,len(tokens)):
             train.append(tokens[i])
 
-        unigram_map, bigram_map, trigram_map, fourgram_map = mapsFormatation(train)
+        train = mark_unknown_words(train)
+
+        unigram_map = formUnigramMap(train)
+        bigram_map = formBigramMap(train)
+        trigram_map = formTrigramMap(train)
+        fourgram_map = formFourgramMap(train)
         
+        test = mark_unknown_test(test, unigram_map)
         #---------------------------------------------------------------------------------------> Started file writing part
         # train_t = []
         # test_t = []
