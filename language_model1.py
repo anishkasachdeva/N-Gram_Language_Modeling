@@ -45,6 +45,7 @@ def mapsFormatation(tokens):
     for i in range(len(tokens)):
         for j in range(len(tokens[i])):
             a = tokens[i][j]
+            # print(a)
             if a in unigram_map:
                 unigram_map[a] += 1
             else:
@@ -125,12 +126,14 @@ def witten_bell_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, four
 
 def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map):
     discounting_factor = 0.75
-    final_probability_of_sentence = 0
+    final_probability_of_sentence = 0.0
+
     for index in range(3, len(sen)):
         a = sen[index-3]
         b = sen[index-2]
         c = sen[index-1]
         d = sen[index]
+        # print(a,b,c,d)
         partial_probability = 0
 
         if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
@@ -152,7 +155,8 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
             # if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
             deno_1 = trigram_map[a][b][c]
             lambda_abc = float(discounting_factor * num_1)/float(deno_1)
-
+            
+            # print(lambda_abc)
             #-------------------------------------------------Calculation of P(d|bc)
 
             Ccn_bcd = 0
@@ -173,7 +177,8 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
             deno_2 = bigram_map[b][c]
             # lambda_bc = (float(discounting_factor)/float(deno_2))*float(num_2)
             lambda_bc = float(discounting_factor * num_2)/float(deno_2)
-
+            
+            # print(lambda_bc)
             #-------------------------------------------------Calculation of P(d|c)
 
             CCn_cd = 0
@@ -193,6 +198,8 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
             # if c in unigram_map:
             deno_3 = unigram_map[c]
             lambda_c = float(discounting_factor * num_3)/float(deno_3)
+            
+            # print(lambda_c)
 
             #-------------------------------------------------Calculation of P(d|phi)
 
@@ -203,24 +210,29 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
                 if d in bigram_map[i]:
                     CCn_phi_d += 1
             for i in bigram_map:
-                CCn_phi = len(bigram_map[i])
+                CCn_phi += len(bigram_map[i])
             first_term_4 = float(max(CCn_phi_d - discounting_factor,0))/float(CCn_phi)
 
             num_4 = 0
             deno_4 = 0
             num_4 = len(unigram_map)
             for i in unigram_map:
-                deno_4 = unigram_map[i]
-            lambda_phi = float(discounting_factor * num_4) / float(deno_4)
-            last_term = float(lambda_phi)/float(num_4)
-
+                deno_4 += unigram_map[i]
+            # lambda_phi = float(discounting_factor * num_4) / float(deno_4)
+            last_term = float(discounting_factor)/float(deno_4)
+            # print("Total words are ", deno_4)
+            # print(last_term)
             #-------------------------------------------------Calculation of Partial Probability
-
+            
             partial_probability = (first_term_1 + lambda_abc * (first_term_2 + lambda_bc * (first_term_3 + lambda_c * (first_term_4 + last_term))))
             # return math.log(partial_probability)
+            # print("hey ", partial_probability)
             
         else:
-            lambd = (float(discounting_factor)/float(sum(unigram_map.values())))*len(unigram_map)
+            total_words = 0
+            for i in unigram_map:
+                total_words += unigram_map[i]
+            lambd = (float(discounting_factor)/float(total_words))*len(unigram_map)
             
             fourgrams_variety = 0
             for i in fourgram_map:
@@ -229,8 +241,12 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
                         fourgrams_variety += len(fourgram_map[i][j][k])
             
             partial_probability = float(lambd)/float(fourgrams_variety)
+            # print(partial_probability)
+            # print(partial_probability)
             # return math.log(partial_probability)
-        
+            # partial_probability = float(lambd)/float(len(fourgram_map))
+            # partial_probability = float(discounting_factor)/len()
+
         final_probability_of_sentence += math.log(partial_probability)
     return final_probability_of_sentence
 
