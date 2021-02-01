@@ -4,6 +4,7 @@ import sys
 import pprint
 import math
 import re
+import random
 
 def tokenize(ip_text) :
     start_tag = "<"
@@ -92,7 +93,7 @@ def mapsFormatation(tokens):
 
 
 
-    for i in range(len(tokens) - 3):
+    for i in range(len(tokens)):
         for j in range(len(tokens[i]) - 3):
             a = tokens[i][j]
             b = tokens[i][j+1]
@@ -124,49 +125,37 @@ def mapsFormatation(tokens):
 
 def kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourgram_map):
 
-    # print(a + "  " + b + "  " + c + "  " + d)
     discounting_factor = 0.75
     partial_probability = 0
 
+    # print(a,b,c,d)
     if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
-
     #-------------------------------------------------Calculation of P(d|abc)
         Ckn_abcd = 0
         Ckn_abc = 0
-        
-        if a in fourgram_map:
-            if b in fourgram_map[a]:
-                if c in fourgram_map[a][b]:
-                    if d in fourgram_map[a][b][c]:
-                        Ckn_abcd = fourgram_map[a][b][c][d]
-        
+
+        if a in fourgram_map and b in fourgram_map[a] and c in fourgram_map[a][b] and d in fourgram_map[a][b][c]:
+            Ckn_abcd = fourgram_map[a][b][c][d]
         # print(Ckn_abcd)
-        if a in trigram_map:
-            if b in trigram_map[a]:
-                if c in trigram_map[a][b]:
-                    Ckn_abc = trigram_map[a][b][c]
-
+        if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
+            Ckn_abc = trigram_map[a][b][c]
         # print(Ckn_abc)
-
         first_term_1 = float(max(Ckn_abcd - discounting_factor, 0))/float(Ckn_abc)
-        
         # print(first_term_1)
-
         num_1 = 0
         deno_1 = 0
+        if a in fourgram_map and b in fourgram_map[a] and c in fourgram_map[a][b]:
+            num_1 = len(fourgram_map[a][b][c])
 
-        if a in fourgram_map:
-            if b in fourgram_map[a]:
-                if c in fourgram_map[a][b]:
-                    num_1 = len(fourgram_map[a][b][c])
+        if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
+            deno_1 = trigram_map[a][b][c]
 
-        if a in trigram_map:
-            if b in trigram_map[a]:
-                if c in trigram_map[a][b]:
-                    deno_1 = trigram_map[a][b][c]
+        # print("****************************")
+        # print(num_1)
+        # print(deno_1)
+        # print("****************************")
 
         lambda_abc = float(discounting_factor * num_1)/float(deno_1)
-
         # print(lambda_abc)
         #-------------------------------------------------Calculation of P(d|bc)
 
@@ -174,30 +163,23 @@ def kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourg
         CCn_bc = 0
 
         for i in fourgram_map:
-            if b in fourgram_map[i]:
-                if c in fourgram_map[i][b]:
-                    if d in fourgram_map[i][b][c]:
-                        Ccn_bcd += 1
+            if b in fourgram_map[i] and c in fourgram_map[i][b] and d in fourgram_map[i][b][c]:
+                Ccn_bcd += 1
 
         for i in fourgram_map:
-            if b in fourgram_map[i]:
-                if c in fourgram_map[i][b]:
-                    CCn_bc += len(fourgram_map[i][b][c])
-
+            if b in fourgram_map[i] and c in fourgram_map[i][b]:
+                CCn_bc += len(fourgram_map[i][b][c])
 
         first_term_2 = float(max(Ccn_bcd - discounting_factor,0))/float(CCn_bc)
 
         num_2 = 0
         deno_2 = 0
 
-        if b in trigram_map:
-            if c in trigram_map[b]:
-                num_2 = len(trigram_map[b][c])
+        if b in trigram_map and c in trigram_map[b]:
+            num_2 = len(trigram_map[b][c])
 
-        if b in bigram_map:
-            if c in bigram_map[b]:
-                deno_2 = bigram_map[b][c]
-
+        if b in bigram_map and c in bigram_map[b]:
+            deno_2 = bigram_map[b][c]
 
         lambda_bc = float(discounting_factor * num_2)/float(deno_2)
 
@@ -208,9 +190,8 @@ def kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourg
         CCn_c = 0
 
         for i in trigram_map:
-            if c in trigram_map[i]:
-                if d in trigram_map[i][c]:
-                    CCn_cd += 1
+            if c in trigram_map[i] and d in trigram_map[i][c]:
+                CCn_cd += 1
 
         for i in trigram_map:
             if c in trigram_map[i]:
@@ -255,7 +236,16 @@ def kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourg
         
         lambda_phi = float(discounting_factor * num_4) / float(deno_4)
         
-
+        # print("first_term_1",first_term_1)
+        # print(lambda_abc)
+        # print("first_term_2",first_term_2)
+        # print(lambda_bc)
+        # print("first_term_3",first_term_3)
+        # print(lambda_c)
+        # print("first_term_4",first_term_4)
+        # print(lambda_phi)
+# 
+        # print("lambda", lambda_phi)
         last_term = float(1) / float(len(unigram_map))
 
         # print(lambda_phi * last_term)
@@ -272,7 +262,7 @@ def kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourg
         for i in unigram_map:
             total_words += unigram_map[i]
         partial_probability = float(discounting_factor / total_words)
-
+        # print(partial_probability)
         return math.log(partial_probability)
 
     return partial_probability
@@ -280,6 +270,27 @@ def kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourg
 def perplexity(partial_probability):
     pass
 
+def file_open():
+    f1 = open("2018101112-LM1-train-perplexity.txt", "a")
+    f2 = open("2018101112-LM1-test-perplexity.txt", "a")
+    f3 = open("2018101112-LM2-train-perplexity.txt", "a")
+    f4 = open("2018101112-LM2-test-perplexity.txt", "a")
+    f5 = open("2018101112-LM3-train-perplexity.txt", "a")
+    f6 = open("2018101112-LM3-test-perplexity.txt", "a")
+    f7 = open("2018101112-LM4-train-perplexity.txt", "a")
+    f8 = open("2018101112-LM4-test-perplexity.txt", "a")
+
+    return f1,f2,f3,f4,f5,f6,f7,f8
+
+def file_close(f1,f2,f3,f4,f5,f6,f7,f8):
+    f1.close()
+    f2.close()
+    f3.close()
+    f4.close()
+    f5.close()
+    f6.close()
+    f7.close()
+    f8.close()
 
 smoothing_technique = sys.argv[1]
 corpus = sys.argv[2]
@@ -295,30 +306,28 @@ if os.path.exists(corpus):
         
         input_sentence = tokenize(input_sen)
         
-        # print(tokens)
-        # pprint.pprint(fourgram_map, width=1)
-        # for i in input_sentence:
-        #     print(i)
-
         train = []
         test = []
 
-        # print(len(tokens))
-        for i in range(20):
-            # print(tokens[i])
-            train.append(tokens[i])
-        
-        for i in range(20,len(tokens)):
-            test.append(tokens[i])
+        # random.shuffle(tokens)
 
-        # print(test)
+
+        for i in range(5):
+            test.append(tokens[i])
+        
+        for i in range(5,len(tokens)):
+            train.append(tokens[i])
+
+        # pp1 = pprint.PrettyPrinter(indent=4)
+        # pp1.pprint(test)
 
         unigram_map, bigram_map, trigram_map, fourgram_map = mapsFormatation(train)
         
-        f1 = open("2018101112-LM1-test-perplexity.txt", "a")
-        
+        f1,f2,f3,f4,f5,f6,f7,f8 = file_open()
+        # --------------------------------------------------------------------------------------------------------------------------------------------------
         if smoothing_technique == 'k'or smoothing_technique == 'K':
             for i in range(len(test)):
+                partial_probability_list = []
                 final_probability = 0
                 sentence = ""
                 for j in range(3,len(test[i])):
@@ -327,19 +336,17 @@ if os.path.exists(corpus):
                     b = test[i][j-2]
                     c = test[i][j-1]
                     d = test[i][j]
-
                     partial_probability = kneser_ney_smoothing(a, b, c, d, unigram_map, bigram_map, trigram_map, fourgram_map)
-                    # print("partial probability", partial_probability)
 
                     final_probability = final_probability + partial_probability
 
-                print((final_probability))
-                f1.write(sentence)
-                f1.write("\t")
-                f1.write(str(final_probability))
-                f1.write("\n")
+                partial_probability_list.append(partial_probability)
                 
-            f1.close
+                print(final_probability)
+        # --------------------------------------------------------------------------------------------------------------------------------------------------
+
+            file_close(f1,f2,f3,f4,f5,f6,f7,f8)
+
         elif smoothing_technique == 'w' or smoothing_technique == 'W':
             pass
         else:
