@@ -39,22 +39,24 @@ TODO:
 
 
 
-Unigram_map = 	{	
+Unigram_map = 	{
                     Unigram : c,
                     Unigram : c,
                     Unigram : c
                 }
 
 
-Bigram_map =	{
-				    Bigram :	{
-							        Bigram : c
-                                },
-					Bigram : 	{
-							    	Bigram : c
-							    },
-					Bigram : 	{
-							    	Bigram : c
+Bigram_map =    {
+                    Bigram :    {
+                                    Bigram : c
+                                }
+
+                    Bigram :    {
+                                    Bigram : c
+                                }
+                                
+                    Bigram :    {
+                                    Bigram : c
                                 }
                 } 
 
