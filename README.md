@@ -4,7 +4,7 @@
 ##### Anishka Sachdeva (2018101112)
 ###### 1st February, 2021
 ---
-## Steps to execute the code :
+## Steps to execute the code
 python3 language_model.py <smoothing_type> <path_corpus>
 
 ###### smoothing_type = k for Kneser Ney Smoothing and
@@ -23,5 +23,5 @@ Perplexity is calculated in the following:
 7. Perplexity is calculated using the following formula : 
     1. float(1)/float(math.exp(float(probability)/float(n)))
     2. Here probability = probablity of each sentence in the test set.
-        1. Probability of each sentence is calculated by the formula exp(math.log(p1) + math.log(p2) + math.log(p3) + .... + math.log(pN)) 
+        1. Probability of each sentence = exp(math.log(p1) + math.log(p2) + math.log(p3) + .... + math.log(pN)) 
     3. Here n =  length(sentence) - 3
