@@ -11,7 +11,7 @@ python3 language_model.py <smoothing_type> <path_corpus>
 
 ###### smoothing_type = w for Witten Bell Smoothing
 ---
-###### Files generated
+## Files generated
 
 Perplexity is calculated in the following:
 1. The corpus is divided into test set and training set using random.shuffle.
