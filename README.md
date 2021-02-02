@@ -6,84 +6,22 @@
 ---
 ## Steps to execute the code :
 python3 language_model.py <smoothing_type> <path_corpus>
+
 ###### smoothing_type = k for Kneser Ney Smoothing and
+
 ###### smoothing_type = w for Witten Bell Smoothing
 ---
-TODO:
-1. Handle lower-upper case ---------------------------------------->Done
-2. Handle if empty sentence is given in input sentence ------------>Done
-3. Handle if spaces are given in input sentence ------------------->
-5. Discuss the edge case handling with Viksit in tokenization
-6. Write README till tomorrow's work
-7. Finish Perplexity and Smoothing
+###### Files generated
 
-Unigram_map =   {
-                    Unigram : c,
-                    Unigram : c,
-                    Unigram : c
-                }
-
-
-Bigram_map  =   {
-                    Bigram :    {
-                                    Bigram : c
-                                }
-
-                    Bigram :    {
-                                    Bigram : c
-                                }
-                                
-                    Bigram :    {
-                                    Bigram : c
-                                }
-                } 
-
-
-Trigram_map = {
-                    Trigram :   {
-                                    Trigram :   {
-                                                    Trigrams : c
-                                                }
-                                }
-
-                    Trigram :   {
-                                    Trigram :   {
-                                                    Trigrams : c
-                                                }
-                                }
-
-                    Trigram :   {
-                                    Trigram : {
-                                                    Trigrams : c
-                                                }
-                                }
-                }
-
-
-Fourgram_map = {
-                    Fourgram :  {
-                                    Fourgram :  {
-                                                    Fourgrams : {
-                                                                    Fourgrams : c
-                                                                }
-                                                }
-                                }   
-
-                    Fourgram :  {
-                                    Fourgram :  {
-                                                    Fourgrams : {
-                                                                    Fourgram : c
-                                                                }
-                                                }
-                                }
-
-                    Fourgram :  {
-                                    Fourgram : {
-                                                    Fourgrams : {
-                                                                    Fourgram : c
-                                                                }
-                                                }
-                                }
-                }
-
-
+Perplexity is calculated in the following:
+1. The corpus is divided into test set and training set using random.shuffle.
+2. Then the language model is created on training test.
+3. Then each sentence in the test set is evaluated.
+4. Probability of each sentence is calculated by the two smoothing methods.
+5. Then each probability is written in the file along with the "tokenized sentence".
+6. At last the average perplexity score is put in the file.
+7. Perplexity is calculated using the following formula : 
+    1. float(1)/float(math.exp(float(probability)/float(n)))
+    2. Here probability = probablity of each sentence in the test set.
+        1. Probability of each sentence is calculated by the formula exp(math.log(p1) + math.log(p2) + math.log(p3) + .... + math.log(pN)) 
+    3. Here n =  length(sentence) - 3
