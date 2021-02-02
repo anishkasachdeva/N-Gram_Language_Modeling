@@ -116,7 +116,7 @@ def mark_unknown_words(input_tokens):
         frequency.append(unigram_map[word])
 
     frequency.sort()
-    lower_limit = frequency[int(0.02*len(frequency))]
+    lower_limit = frequency[int(0.05*len(frequency))]
 
     for i in range(len(input_tokens)):
         for j in range(len(input_tokens[i])):
@@ -153,7 +153,6 @@ def witten_bell_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_ma
             deno_1 = len(fourgram_map[a][b][c]) + trigram_map[a][b][c]
             lambda_abc = 1-float(num_1)/float(deno_1)
 
-            # print("l1 ", lambda_abc)
             f_abc = 0
 
             if d not in fourgram_map[a][b][c]:
@@ -166,14 +165,12 @@ def witten_bell_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_ma
                 cnt_abc = trigram_map[a][b][c]
                 f_abc = float(cnt_abcd)/float(cnt_abc + cnt_abc_variety)
 
-            # print("f1 ", f_abc)
             #---------------------------------------------------------------------------------------------------
 
             num_2 = len(trigram_map[b][c])
             deno_2 = len(trigram_map[b][c]) + bigram_map[b][c] 
             lambda_bc = 1-float(num_2)/float(deno_2)
 
-            # print("l2 ", lambda_bc)
             f_bc = 0
 
             if d not in trigram_map[b][c]:
@@ -186,14 +183,12 @@ def witten_bell_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_ma
                 cnt_bc = bigram_map[b][c]
                 f_bc = float(cnt_bcd)/float(cnt_bc + cnt_bc_variety)
 
-            # print("f2 ", f_bc)
             #---------------------------------------------------------------------------------------------------
             
             num_3 = len(bigram_map[c])
             deno_3 = len(bigram_map[c]) + unigram_map[c]
             lambda_c = 1-float(num_3)/float(deno_3)
 
-            # print("l3 ", lambda_c)
             f_c = 0
 
             if d not in bigram_map[c]:
@@ -206,7 +201,6 @@ def witten_bell_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_ma
                 cnt_c = unigram_map[c]
                 f_c = float(cnt_cd)/float(cnt_c + cnt_c_variety)
             #---------------------------------------------------------------------------------------------------
-            # print("f3 ", f_c)
             cnt_d = 0
             if d in unigram_map:
                 cnt_d = unigram_map[d]
@@ -227,7 +221,6 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
     discounting_factor = 0.75
     final_probability_of_sentence = 0.0
 
-    # print(len(sen))
     for index in range(3, len(sen)):
         a = sen[index-3]
         b = sen[index-2]
@@ -242,22 +235,17 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
         
             Ckn_abcd = 0
             Ckn_abc = 0
-            # if a in fourgram_map and b in fourgram_map[a] and c in fourgram_map[a][b] and d in fourgram_map[a][b][c]:
             if d in fourgram_map[a][b][c]:
                 Ckn_abcd = fourgram_map[a][b][c][d]
-            # if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
             Ckn_abc = trigram_map[a][b][c]
             first_term_1 = float(max(Ckn_abcd - discounting_factor, 0))/float(Ckn_abc)
 
             num_1 = 0
             deno_1 = 0
-            # if a in fourgram_map and b in fourgram_map[a] and c in fourgram_map[a][b]:
             num_1 = len(fourgram_map[a][b][c])
-            # if a in trigram_map and b in trigram_map[a] and c in trigram_map[a][b]:
             deno_1 = trigram_map[a][b][c]
             lambda_abc = float(discounting_factor * num_1)/float(deno_1)
             
-            # print(lambda_abc)
             #-------------------------------------------------Calculation of P(d|bc)
 
             Ccn_bcd = 0
@@ -272,14 +260,10 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
 
             num_2 = 0
             deno_2 = 0
-            # if b in trigram_map and c in trigram_map[b]:
             num_2 = len(trigram_map[b][c])
-            # if b in bigram_map and c in bigram_map[b]:
             deno_2 = bigram_map[b][c]
-            # lambda_bc = (float(discounting_factor)/float(deno_2))*float(num_2)
             lambda_bc = float(discounting_factor * num_2)/float(deno_2)
             
-            # print(lambda_bc)
             #-------------------------------------------------Calculation of P(d|c)
 
             CCn_cd = 0
@@ -294,12 +278,9 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
 
             num_3 = 0
             deno_3 = 0
-            # if c in bigram_map:
             num_3 = len(bigram_map[c])
-            # if c in unigram_map:
             deno_3 = unigram_map[c]
             lambda_c = float(discounting_factor * num_3)/float(deno_3)
-            # print(lambda_c)
             #-------------------------------------------------Calculation of P(d|phi)
             CCn_phi_d = 0
             CCn_phi = 0
@@ -323,7 +304,6 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
             
         else:
             lambd = (float(discounting_factor)/float(total_words))*len(unigram_map)
-            # print(lambd)
             partial_probability = float(lambd)/float(fourgrams_variety)
 
         final_probability_of_sentence += math.log(partial_probability)
@@ -332,7 +312,6 @@ def kneser_ney_smoothing(sen, unigram_map, bigram_map, trigram_map, fourgram_map
 
 def calculate_perplexity_of_sentence(probability, n):
     return float(1)/float(math.exp(float(probability)/float(n)))
-    # return (probability**(1/float(n)))
 
 
 def perplexity_Train_Test(dataset, file_to_write, unigram_map, bigram_map, trigram_map, fourgram_map ):
@@ -394,10 +373,8 @@ if os.path.exists(corpus):
             train = []
             test = []
 
-
             random.shuffle(tokens)
-
-
+            
             # for i in range(1000):
                 # test.append(tokens[i])
             
@@ -477,8 +454,6 @@ if os.path.exists(corpus):
                         fourgrams_variety += len(fourgram_map[i][j][k])
 
             if smoothing_technique == 'k'or smoothing_technique == 'K':
-                # print(input_sentence)
-                
                 final_probability_of_sentence = kneser_ney_smoothing(input_sentence[0], unigram_map, bigram_map, trigram_map, fourgram_map, fourgrams_variety, total_words)
 
                 # for i in range(len(test)):
@@ -498,8 +473,3 @@ if os.path.exists(corpus):
                 print("Wrong Smoothing Technique. Please try again!")
 else:
     print("Wrong File Name. Please try again!")
-
-
-# log probability ?
-  # pp1 = pprint.PrettyPrinter(indent=4)
-        # pp1.pprint(test)
